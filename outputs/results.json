@@ -1,0 +1,293 @@
+{
+ "n_simulation": 2000,
+ "params": {
+  "llm_ms": [
+   900,
+   2200
+  ],
+  "rtt_ms": [
+   60,
+   140
+  ],
+  "p_echec_cloud": 0.03,
+  "tokens_par_dossier": 171,
+  "cout_par_dossier_usd": 5.914285714285714e-05,
+  "remise_batch": 0.5,
+  "workers": {
+   "realtime": 4,
+   "batch": 16,
+   "streaming": 8,
+   "edge": 1
+  },
+  "fenetre_stream_ms": 500,
+  "fenetre_batch_h": 24,
+  "edge_overhead_ms": [
+   2,
+   6
+  ]
+ },
+ "modes": {
+  "real-time": {
+   "resume": {
+    "mode": "real-time",
+    "n": 2000,
+    "taux_succes_pct": 99.95,
+    "revue_manuelle": 1,
+    "latence_traitement_p50_ms": 1683.3,
+    "latence_traitement_p95_ms": 2287.0,
+    "delai_resultat_moyen_s": 1.718,
+    "debit_dossiers_s": 2.33,
+    "cout_usd": 0.118286,
+    "cout_1000_dossiers_usd": 0.0591,
+    "donnees_quittent_appareil": true,
+    "hors_ligne": false,
+    "analyse_llm": true
+   },
+   "categories": {
+    "Risque élevé": 242,
+    "Risque faible": 1758
+   }
+  },
+  "batch": {
+   "resume": {
+    "mode": "batch",
+    "n": 2000,
+    "taux_succes_pct": 99.85,
+    "revue_manuelle": 3,
+    "latence_traitement_p50_ms": 1680.6,
+    "latence_traitement_p95_ms": 2278.7,
+    "delai_resultat_moyen_s": 43414.098,
+    "debit_dossiers_s": 9.34,
+    "cout_usd": 0.059143,
+    "cout_1000_dossiers_usd": 0.0296,
+    "donnees_quittent_appareil": true,
+    "hors_ligne": false,
+    "analyse_llm": true,
+    "fenetre_h": 24
+   },
+   "categories": {
+    "Risque élevé": 243,
+    "Risque faible": 1757
+   }
+  },
+  "streaming": {
+   "resume": {
+    "mode": "streaming",
+    "n": 2000,
+    "taux_succes_pct": 99.9,
+    "revue_manuelle": 2,
+    "latence_traitement_p50_ms": 1914.5,
+    "latence_traitement_p95_ms": 2621.4,
+    "delai_resultat_moyen_s": 1.957,
+    "debit_dossiers_s": 4.09,
+    "cout_usd": 0.118286,
+    "cout_1000_dossiers_usd": 0.0591,
+    "donnees_quittent_appareil": true,
+    "hors_ligne": false,
+    "analyse_llm": true,
+    "debit_entrant_evt_s": 50,
+    "fenetre_ms": 500
+   },
+   "categories": {
+    "Risque élevé": 243,
+    "Risque faible": 1757
+   }
+  },
+  "edge": {
+   "resume": {
+    "mode": "edge",
+    "n": 2000,
+    "taux_succes_pct": 100.0,
+    "revue_manuelle": 0,
+    "latence_traitement_p50_ms": 4.0,
+    "latence_traitement_p95_ms": 5.8,
+    "delai_resultat_moyen_s": 0.004,
+    "debit_dossiers_s": 248.04,
+    "cout_usd": 0.0,
+    "cout_1000_dossiers_usd": 0.0,
+    "donnees_quittent_appareil": false,
+    "hors_ligne": true,
+    "analyse_llm": false,
+    "sync_differee_evenements": 2000,
+    "calcul_reel_moyen_ms": 0.00098
+   },
+   "categories": {
+    "Risque élevé": 242,
+    "Risque faible": 1758
+   }
+  }
+ },
+ "csv_reel_14": {
+  "real-time": {
+   "resume": {
+    "mode": "real-time",
+    "n": 14,
+    "taux_succes_pct": 100.0,
+    "revue_manuelle": 0,
+    "latence_traitement_p50_ms": 2048.8,
+    "latence_traitement_p95_ms": 3496.1,
+    "delai_resultat_moyen_s": 2.092,
+    "debit_dossiers_s": 1.91,
+    "cout_usd": 0.000828,
+    "cout_1000_dossiers_usd": 0.0591,
+    "donnees_quittent_appareil": true,
+    "hors_ligne": false,
+    "analyse_llm": true
+   },
+   "categories": {
+    "Risque élevé": 4,
+    "Risque faible": 10
+   }
+  },
+  "batch": {
+   "resume": {
+    "mode": "batch",
+    "n": 14,
+    "taux_succes_pct": 100.0,
+    "revue_manuelle": 0,
+    "latence_traitement_p50_ms": 2052.9,
+    "latence_traitement_p95_ms": 2675.5,
+    "delai_resultat_moyen_s": 43201.705,
+    "debit_dossiers_s": 8.21,
+    "cout_usd": 0.000414,
+    "cout_1000_dossiers_usd": 0.0296,
+    "donnees_quittent_appareil": true,
+    "hors_ligne": false,
+    "analyse_llm": true,
+    "fenetre_h": 24
+   },
+   "categories": {
+    "Risque élevé": 4,
+    "Risque faible": 10
+   }
+  },
+  "streaming": {
+   "resume": {
+    "mode": "streaming",
+    "n": 14,
+    "taux_succes_pct": 100.0,
+    "revue_manuelle": 0,
+    "latence_traitement_p50_ms": 2271.3,
+    "latence_traitement_p95_ms": 3157.2,
+    "delai_resultat_moyen_s": 2.251,
+    "debit_dossiers_s": 3.55,
+    "cout_usd": 0.000828,
+    "cout_1000_dossiers_usd": 0.0591,
+    "donnees_quittent_appareil": true,
+    "hors_ligne": false,
+    "analyse_llm": true,
+    "debit_entrant_evt_s": 50,
+    "fenetre_ms": 500
+   },
+   "categories": {
+    "Risque élevé": 4,
+    "Risque faible": 10
+   }
+  },
+  "edge": {
+   "resume": {
+    "mode": "edge",
+    "n": 14,
+    "taux_succes_pct": 100.0,
+    "revue_manuelle": 0,
+    "latence_traitement_p50_ms": 3.1,
+    "latence_traitement_p95_ms": 5.7,
+    "delai_resultat_moyen_s": 0.003,
+    "debit_dossiers_s": 287.83,
+    "cout_usd": 0.0,
+    "cout_1000_dossiers_usd": 0.0,
+    "donnees_quittent_appareil": false,
+    "hors_ligne": true,
+    "analyse_llm": false,
+    "sync_differee_evenements": 14,
+    "calcul_reel_moyen_ms": 0.00116
+   },
+   "categories": {
+    "Risque élevé": 4,
+    "Risque faible": 10
+   }
+  }
+ },
+ "derive": [
+  {
+   "semaine": 1,
+   "part_cas_invisibles": 0.05,
+   "psi_scores": 0.0036,
+   "rappel_pct": 94.7,
+   "alerte_psi": false,
+   "alerte_rappel": false
+  },
+  {
+   "semaine": 2,
+   "part_cas_invisibles": 0.05,
+   "psi_scores": 0.0331,
+   "rappel_pct": 95.1,
+   "alerte_psi": false,
+   "alerte_rappel": false
+  },
+  {
+   "semaine": 3,
+   "part_cas_invisibles": 0.08,
+   "psi_scores": 0.0085,
+   "rappel_pct": 92.0,
+   "alerte_psi": false,
+   "alerte_rappel": false
+  },
+  {
+   "semaine": 4,
+   "part_cas_invisibles": 0.12,
+   "psi_scores": 0.0075,
+   "rappel_pct": 88.9,
+   "alerte_psi": false,
+   "alerte_rappel": false
+  },
+  {
+   "semaine": 5,
+   "part_cas_invisibles": 0.18,
+   "psi_scores": 0.0296,
+   "rappel_pct": 84.3,
+   "alerte_psi": false,
+   "alerte_rappel": true
+  },
+  {
+   "semaine": 6,
+   "part_cas_invisibles": 0.25,
+   "psi_scores": 0.0307,
+   "rappel_pct": 79.8,
+   "alerte_psi": false,
+   "alerte_rappel": true
+  }
+ ],
+ "scenarios": [
+  {
+   "scenario": "Consultation du statut par les candidats sur le portail",
+   "mode": "real-time",
+   "justification": "réponse immédiate à une requête utilisateur",
+   "outils_cles": "API REST (FastAPI) conteneurisée"
+  },
+  {
+   "scenario": "Classement nocturne de 5 000 dossiers",
+   "mode": "batch",
+   "justification": "résultat tolérable à l'heure : traitement planifié de gros volumes",
+   "outils_cles": "Apache Airflow, Dagster, Prefect"
+  },
+  {
+   "scenario": "Pic de dépôts à la clôture des candidatures",
+   "mode": "streaming",
+   "justification": "flux continu et fort volume : traitement dès l'arrivée des événements",
+   "outils_cles": "Apache Kafka, Apache Flink, AWS Kinesis"
+  },
+  {
+   "scenario": "Jury sur tablette, centre d'examen sans réseau",
+   "mode": "edge",
+   "justification": "pas de réseau fiable ou confidentialité maximale : exécution sur l'appareil",
+   "outils_cles": "TensorFlow Lite, Core ML, ONNX"
+  },
+  {
+   "scenario": "Dossiers confidentiels (handicap, dérogations) traités localement",
+   "mode": "edge",
+   "justification": "pas de réseau fiable ou confidentialité maximale : exécution sur l'appareil",
+   "outils_cles": "TensorFlow Lite, Core ML, ONNX"
+  }
+ ]
+}

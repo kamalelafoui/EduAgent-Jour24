@@ -1,0 +1,15 @@
+candidat_id,programme,moyenne,similarite_lettre_pct,diplome_verifiable,pieces_completes,cas_sensible
+CAND-001,Informatique,14.5,12,oui,oui,non
+CAND-002,Médecine,16.2,45,oui,oui,non
+CAND-003,Droit,11.0,8,oui,non,non
+CAND-004,Gestion,13.4,5,non,oui,oui
+CAND-005,Ingénierie,12.8,3,oui,oui,oui
+CAND-006,Psychologie,15.0,50,oui,non,oui
+CAND-007,Lettres,9.5,0,oui,oui,non
+CAND-008,Architecture,14.0,10,oui,oui,non
+CAND-009,Informatique,12.0,41,oui,oui,non
+CAND-010,,11.2,4,oui,oui,non
+CAND-011,Biologie,13.9,6,oui,non,non
+CAND-012,Droit,15.5,2,oui,oui,oui
+CAND-013,Économie,abc,7,oui,oui,non
+CAND-014,Histoire,,9,oui,oui,non

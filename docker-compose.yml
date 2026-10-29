@@ -1,0 +1,11 @@
+services:
+  api:                      # mode real-time (+ edge/score, recommend, compare)
+    build: .
+    ports: ["8000:8000"]
+    env_file: .env
+    restart: unless-stopped
+  batch:                    # mode batch : exécuté à la demande ou par un orchestrateur (Airflow/cron)
+    build: .
+    command: ["python", "main.py", "batch", "data/dossiers.csv"]
+    profiles: ["batch"]
+    volumes: ["./outputs:/app/outputs"]

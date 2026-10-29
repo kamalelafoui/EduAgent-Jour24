@@ -1,0 +1,254 @@
+{
+  "nom": "EduAgent — déploiement multi-modes (Jour 24)",
+  "version": "1.0.0",
+  "description": "Un même agent d'admission HITL déployé en Batch, Real-Time, Streaming et Edge, supervisé par une couche MLOps.",
+  "exporte_le": "2026-10-29",
+  "secrets": "variables d'environnement uniquement",
+  "nodes": [
+    {
+      "id": "t_batch",
+      "type": "Trigger",
+      "name": "Déclencheur Batch (cron 02:00)",
+      "config": {
+        "orchestrateur": "Airflow | Dagster | Prefect",
+        "commande": "python main.py batch data/dossiers.csv"
+      }
+    },
+    {
+      "id": "t_rt",
+      "type": "Webhook",
+      "name": "Déclencheur Real-Time",
+      "config": {
+        "endpoint": "POST /realtime/score",
+        "auth": "X-API-Key"
+      }
+    },
+    {
+      "id": "t_stream",
+      "type": "StreamConsumer",
+      "name": "Déclencheur Streaming",
+      "config": {
+        "source": "Kafka | Kinesis",
+        "fenetre_ms": 500
+      }
+    },
+    {
+      "id": "t_edge",
+      "type": "DeviceEvent",
+      "name": "Déclencheur Edge (appareil)",
+      "config": {
+        "endpoint_local": "/edge/score",
+        "reseau": "non requis"
+      }
+    },
+    {
+      "id": "router",
+      "type": "ModeRouter",
+      "name": "Aide au choix du mode",
+      "config": {
+        "regle": [
+          "connectivité aucune OU confidentialité maximale → edge",
+          "latence tolérée >= 1 h → batch",
+          "flux continu ET >= 100000/jour → streaming",
+          "sinon → real-time"
+        ],
+        "endpoint": "GET /recommend"
+      }
+    },
+    {
+      "id": "validate",
+      "type": "InputValidation",
+      "name": "Validation des dossiers",
+      "config": {
+        "champs": [
+          "candidat_id",
+          "programme",
+          "moyenne",
+          "similarite_lettre_pct",
+          "diplome_verifiable",
+          "pieces_completes",
+          "cas_sensible"
+        ],
+        "pii": "aucune donnée de contact transmise"
+      }
+    },
+    {
+      "id": "rules",
+      "type": "RulesEngine",
+      "name": "Scoring par règles",
+      "config": {
+        "base": 10,
+        "fraude": 60,
+        "incomplet": 30,
+        "sensible": 20,
+        "plafond": 100
+      }
+    },
+    {
+      "id": "llm",
+      "type": "LLM",
+      "name": "Analyse LLM (cloud uniquement)",
+      "config": {
+        "provider": "OpenRouter",
+        "api_key": "${OPENROUTER_API_KEY}",
+        "retry": 1,
+        "repli_si_echec": "revue manuelle (risque élevé par défaut)",
+        "modes": [
+          "real-time",
+          "batch",
+          "streaming"
+        ]
+      }
+    },
+    {
+      "id": "hitl",
+      "type": "SmartRouter",
+      "name": "Seuil HITL",
+      "config": {
+        "seuil": 70,
+        "elevé": "escalade commission",
+        "faible": "traitement standard",
+        "else": "revue manuelle"
+      }
+    },
+    {
+      "id": "audit",
+      "type": "AuditLog",
+      "name": "Journal d'audit / sync différée",
+      "config": {
+        "champs": [
+          "correlation_id",
+          "mode",
+          "version",
+          "score",
+          "categorie",
+          "latence_ms",
+          "cout_usd"
+        ],
+        "edge": "stockage local puis synchronisation"
+      }
+    },
+    {
+      "id": "monitor",
+      "type": "Monitoring",
+      "name": "Monitoring MLOps",
+      "config": {
+        "systeme": [
+          "latence p95",
+          "taux d'échec",
+          "coût"
+        ],
+        "ia": [
+          "rappel sur décisions de la commission",
+          "PSI des scores"
+        ],
+        "alerte": "rappel < 85 % OU PSI > 0,2"
+      }
+    },
+    {
+      "id": "ct",
+      "type": "ContinuousTraining",
+      "name": "Recalibrage (CT) + approbation",
+      "config": {
+        "etapes": [
+          "validation des données",
+          "recalibrage règles/seuil",
+          "tests golden",
+          "approbation 2 rôles",
+          "déploiement SemVer",
+          "rollback possible"
+        ]
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "t_batch",
+      "to": "router"
+    },
+    {
+      "from": "t_rt",
+      "to": "router"
+    },
+    {
+      "from": "t_stream",
+      "to": "router"
+    },
+    {
+      "from": "t_edge",
+      "to": "router"
+    },
+    {
+      "from": "router",
+      "to": "validate"
+    },
+    {
+      "from": "validate",
+      "to": "rules"
+    },
+    {
+      "from": "rules",
+      "to": "llm"
+    },
+    {
+      "from": "rules",
+      "to": "hitl"
+    },
+    {
+      "from": "llm",
+      "to": "hitl"
+    },
+    {
+      "from": "hitl",
+      "to": "audit"
+    },
+    {
+      "from": "audit",
+      "to": "monitor"
+    },
+    {
+      "from": "monitor",
+      "to": "ct"
+    }
+  ],
+  "modes": {
+    "batch": [
+      "t_batch",
+      "router",
+      "validate",
+      "rules",
+      "llm",
+      "hitl",
+      "audit",
+      "monitor"
+    ],
+    "real-time": [
+      "t_rt",
+      "router",
+      "validate",
+      "rules",
+      "llm",
+      "hitl",
+      "audit",
+      "monitor"
+    ],
+    "streaming": [
+      "t_stream",
+      "router",
+      "validate",
+      "rules",
+      "llm",
+      "hitl",
+      "audit",
+      "monitor"
+    ],
+    "edge": [
+      "t_edge",
+      "router",
+      "validate",
+      "rules",
+      "hitl",
+      "audit"
+    ]
+  }
+}
