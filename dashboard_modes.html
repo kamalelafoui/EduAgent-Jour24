@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EduAgent — Dashboard des modes de déploiement (Jour 24)</title>
+<style>
+:root{--bg:#F4F7FA;--card:#fff;--tx:#0B2A3F;--mut:#5B6F80;--navy:#0B3C5D;--yel:#FDB913;--ok:#1E8E4E;--ko:#C62828;--bd:#DCE5EC;--soft:#EEF4F9}
+@media(prefers-color-scheme:dark){:root{--bg:#0E1A24;--card:#16263A;--tx:#E6EEF5;--mut:#9DB1C2;--navy:#7FB6DD;--bd:#26405A;--ok:#4CC57F;--ko:#FF6B6B;--soft:#1B3047}}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:64px}
+body{margin:0;font-family:Segoe UI,system-ui,sans-serif;background:var(--bg);color:var(--tx)}
+header{background:#0B3C5D;color:#fff;padding:16px 28px;border-bottom:5px solid var(--yel);display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:14px;text-decoration:none;color:#fff}.brand svg{flex:none}
+.brand b{display:block;font-size:20px;letter-spacing:.2px}.brand small{opacity:.85;font-size:12.5px}
+nav{position:sticky;top:0;z-index:20;background:var(--card);border-bottom:1px solid var(--bd);display:flex;gap:4px;padding:8px 28px;overflow-x:auto;white-space:nowrap}
+nav a{color:var(--tx);text-decoration:none;font-size:13.5px;padding:7px 13px;border-radius:99px;border:1px solid transparent}
+nav a:hover{background:var(--soft)}nav a.on{background:var(--navy);color:#fff}
+@media(prefers-color-scheme:dark){nav a.on{background:var(--yel);color:#0B2A3F}}
+main{padding:22px 28px;display:grid;gap:18px;max-width:1280px;margin:auto}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(250px,100%),1fr))}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px}.card{min-width:0}.card h2{margin:0 0 12px;font-size:15px;color:var(--navy)}
+.mode h3{margin:0 0 8px;font-size:17px}.mode .row{display:flex;justify-content:space-between;font-size:13px;padding:3px 0;border-bottom:1px dashed var(--bd)}
+.mode .row b{font-variant-numeric:tabular-nums}.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:99px;margin:6px 4px 0 0;background:var(--bd)}
+.tag.g{background:rgba(30,142,78,.2);color:var(--ok)}.tag.r{background:rgba(198,40,40,.15);color:var(--ko)}
+.two{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(min(380px,100%),1fr))}
+.bar{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:13px}.bar span.l{width:84px;flex:none}.bar i{display:block;height:18px;border-radius:4px;min-width:3px}.bar em{font-style:normal;color:var(--mut);font-size:12px}
+label{display:block;font-size:13px;margin:8px 0 3px;color:var(--mut)}input,select,button{font:inherit;padding:7px 10px;border-radius:8px;border:1px solid var(--bd);background:var(--card);color:var(--tx);width:100%}
+input:focus,select:focus,button:focus-visible{outline:2px solid var(--yel);outline-offset:1px}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}@media(max-width:560px){.frow{grid-template-columns:1fr}}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.btns button{width:auto;cursor:pointer}
+button.main{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:600}@media(prefers-color-scheme:dark){button.main{background:var(--yel);color:#0B2A3F;border-color:var(--yel)}}
+button.ghost:hover{background:var(--soft)}
+#rec{margin-top:12px;padding:12px;border-radius:10px;background:rgba(253,185,19,.18);font-size:14px}
+#err{color:var(--ko);font-size:13px;margin-top:10px}
+#res{margin-top:14px;padding:14px;border-radius:10px;background:var(--soft);font-size:13.5px;min-height:56px}
+.badge{display:inline-block;font-weight:700;font-size:12.5px;padding:3px 11px;border-radius:99px}.badge.hi{background:rgba(198,40,40,.15);color:var(--ko)}.badge.lo{background:rgba(30,142,78,.2);color:var(--ok)}
+.gauge{position:relative;height:14px;border-radius:7px;background:var(--bd);margin:10px 0 4px}.gauge i{position:absolute;left:0;top:0;bottom:0;border-radius:7px}.gauge u{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--tx)}
+.gl{display:flex;justify-content:space-between;font-size:11px;color:var(--mut)}
+ul.why{margin:8px 0 0;padding-left:18px}ul.why li{margin:2px 0}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--bd)}th{color:var(--mut)}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(150px,100%),1fr));gap:8px}.step{background:var(--navy);color:#fff;border-radius:8px;padding:10px;font-size:13px}.step.k{background:var(--yel);color:#0B2A3F}
+@media(prefers-color-scheme:dark){.step{color:#0B2A3F}}
+svg text{fill:var(--tx);font-size:11px}footer{text-align:center;color:var(--mut);font-size:12px;padding:20px}
+.vide{color:var(--mut);font-style:italic}
+</style></head><body>
+<header>
+ <a class="brand" href="#modes" aria-label="EduAgent — accueil du dashboard">
+  <svg width="52" height="52" viewBox="0 0 52 52" role="img" aria-hidden="true"><rect width="52" height="52" rx="13" fill="#FDB913"/><path d="M26 11 6 21l20 10 20-10z" fill="#0B3C5D"/><path d="M14 26.5V34c0 3 5.4 6 12 6s12-3 12-6v-7.5L26 33z" fill="#0B3C5D"/><path d="M44 22v11" stroke="#0B3C5D" stroke-width="2.4" stroke-linecap="round"/><circle cx="44" cy="35.5" r="2.6" fill="#0B3C5D"/></svg>
+  <span><b>EduAgent — Modes de déploiement &amp; MLOps</b><small>Jour 24 · IA enseignement supérieur · ITQAN Team, LYRICA Lab, ESI Rabat · données : simulation de <span id="n"></span> dossiers</small></span>
+ </a>
+</header>
+<nav id="menu" aria-label="Sections du dashboard">
+ <a href="#modes">Modes</a><a href="#comparaison">Comparaison</a><a href="#choix">Choix du mode</a><a href="#dossier">Analyser un dossier</a><a href="#derive">Dérive MLOps</a><a href="#scenarios">Scénarios</a><a href="#mlops">Boucle MLOps</a>
+</nav>
+<main>
+<section class="grid" id="modes" aria-label="Les 4 modes"></section>
+<section class="two" id="comparaison">
+ <div class="card"><h2>Délai moyen avant résultat (échelle log)</h2><div id="b1"></div></div>
+ <div class="card"><h2>Coût pour 1 000 dossiers (USD, simulé)</h2><div id="b2"></div></div>
+</section>
+<section class="two">
+ <div class="card" id="choix"><h2>Aide au choix du mode</h2>
+  <label for="lat">Latence tolérée</label><select id="lat"><option value="200">≤ 200 ms</option><option value="1000" selected>≈ 1 s</option><option value="60000">≈ 1 min</option><option value="28800000">plusieurs heures</option></select>
+  <label for="vol">Volume par jour</label><input id="vol" type="number" value="3000" min="1">
+  <label for="flux">Flux continu d’événements</label><select id="flux"><option value="0">non</option><option value="1">oui</option></select>
+  <label for="conn">Connectivité</label><select id="conn"><option value="stable">stable</option><option value="aucune">aucune</option></select>
+  <label for="don">Sensibilité des données</label><select id="don"><option value="normales">normale</option><option value="maximale">maximale</option></select>
+  <div id="rec" aria-live="polite"></div></div>
+ <div class="card" id="dossier"><h2>Analyser un dossier</h2>
+  <form id="fd" novalidate>
+   <div class="frow">
+    <div><label for="candidat_id">Identifiant candidat</label><input id="candidat_id" name="candidat_id" maxlength="40" value="CAND-100" autocomplete="off"></div>
+    <div><label for="programme">Programme</label><input id="programme" name="programme" maxlength="60" value="Informatique" autocomplete="off"></div>
+    <div><label for="moyenne">Moyenne (0 à 20)</label><input id="moyenne" name="moyenne" type="number" min="0" max="20" step="0.1" value="13.5"></div>
+    <div><label for="similarite">Similarité de la lettre (%)</label><input id="similarite" name="similarite" type="number" min="0" max="100" step="1" value="10"></div>
+    <div><label for="diplome">Diplôme vérifiable</label><select id="diplome" name="diplome"><option value="oui">oui</option><option value="non">non</option></select></div>
+    <div><label for="pieces">Pièces complètes</label><select id="pieces" name="pieces"><option value="oui">oui</option><option value="non">non</option></select></div>
+    <div><label for="sensible">Cas sensible (dérogation, bourse, handicap)</label><select id="sensible" name="sensible"><option value="non">non</option><option value="oui">oui</option></select></div>
+    <div><label for="mode">Mode de déploiement</label><select id="mode" name="mode"><option value="real-time">Real-Time</option><option value="batch">Batch</option><option value="streaming">Streaming</option><option value="edge">Edge</option></select></div>
+   </div>
+   <div class="btns"><button type="submit" class="main">Analyser le dossier</button><button type="button" class="ghost" id="ex1">Exemple : dossier standard</button><button type="button" class="ghost" id="ex2">Exemple : suspicion de fraude</button></div>
+   <div id="err" role="alert"></div>
+  </form>
+  <div id="res" aria-live="polite"><span class="vide">Renseignez le formulaire puis cliquez sur « Analyser le dossier ».</span></div>
+  <div id="hist" style="margin-top:12px"></div>
+ </div>
+</section>
+<section class="card" id="derive"><h2>Dérive de performance (MLOps) — simulée</h2><svg id="dr" viewBox="0 0 520 250" width="100%" style="max-width:640px;display:block;margin:0 auto" role="img" aria-label="Rappel hebdomadaire sur les décisions à risque élevé"></svg><div id="drn" style="font-size:13px;color:var(--mut)"></div></section>
+<section class="card" id="scenarios"><h2>Scénarios d’usage</h2><div style="overflow-x:auto"><table id="sc"></table></div></section>
+<section class="card" id="mlops"><h2>Boucle MLOps</h2><div class="steps" id="st"></div></section>
+</main>
+<footer>Latences réseau/LLM, taux d’échec (3 %) et remise batch (50 %, hypothèse) sont simulés. Le formulaire applique les règles de <code>edudeploy/scoring.py</code> (seuil HITL 70) directement dans la page, sans envoi de données. Outil d’aide : le choix final dépend du contexte.</footer>
+<script>
+const D={"n_simulation": 2000, "params": {"llm_ms": [900, 2200], "rtt_ms": [60, 140], "p_echec_cloud": 0.03, "tokens_par_dossier": 171, "cout_par_dossier_usd": 5.914285714285714e-05, "remise_batch": 0.5, "workers": {"realtime": 4, "batch": 16, "streaming": 8, "edge": 1}, "fenetre_stream_ms": 500, "fenetre_batch_h": 24, "edge_overhead_ms": [2, 6]}, "modes": {"real-time": {"resume": {"mode": "real-time", "n": 2000, "taux_succes_pct": 99.95, "revue_manuelle": 1, "latence_traitement_p50_ms": 1683.3, "latence_traitement_p95_ms": 2287.0, "delai_resultat_moyen_s": 1.718, "debit_dossiers_s": 2.33, "cout_usd": 0.118286, "cout_1000_dossiers_usd": 0.0591, "donnees_quittent_appareil": true, "hors_ligne": false, "analyse_llm": true}, "categories": {"Risque élevé": 242, "Risque faible": 1758}}, "batch": {"resume": {"mode": "batch", "n": 2000, "taux_succes_pct": 99.85, "revue_manuelle": 3, "latence_traitement_p50_ms": 1680.6, "latence_traitement_p95_ms": 2278.7, "delai_resultat_moyen_s": 43414.098, "debit_dossiers_s": 9.34, "cout_usd": 0.059143, "cout_1000_dossiers_usd": 0.0296, "donnees_quittent_appareil": true, "hors_ligne": false, "analyse_llm": true, "fenetre_h": 24}, "categories": {"Risque élevé": 243, "Risque faible": 1757}}, "streaming": {"resume": {"mode": "streaming", "n": 2000, "taux_succes_pct": 99.9, "revue_manuelle": 2, "latence_traitement_p50_ms": 1914.5, "latence_traitement_p95_ms": 2621.4, "delai_resultat_moyen_s": 1.957, "debit_dossiers_s": 4.09, "cout_usd": 0.118286, "cout_1000_dossiers_usd": 0.0591, "donnees_quittent_appareil": true, "hors_ligne": false, "analyse_llm": true, "debit_entrant_evt_s": 50, "fenetre_ms": 500}, "categories": {"Risque élevé": 243, "Risque faible": 1757}}, "edge": {"resume": {"mode": "edge", "n": 2000, "taux_succes_pct": 100.0, "revue_manuelle": 0, "latence_traitement_p50_ms": 4.0, "latence_traitement_p95_ms": 5.8, "delai_resultat_moyen_s": 0.004, "debit_dossiers_s": 248.06, "cout_usd": 0.0, "cout_1000_dossiers_usd": 0.0, "donnees_quittent_appareil": false, "hors_ligne": true, "analyse_llm": false, "sync_differee_evenements": 2000, "calcul_reel_moyen_ms": 0.00057}, "categories": {"Risque élevé": 242, "Risque faible": 1758}}}, "csv_reel_14": {"real-time": {"resume": {"mode": "real-time", "n": 14, "taux_succes_pct": 100.0, "revue_manuelle": 0, "latence_traitement_p50_ms": 2048.8, "latence_traitement_p95_ms": 3496.1, "delai_resultat_moyen_s": 2.092, "debit_dossiers_s": 1.91, "cout_usd": 0.000828, "cout_1000_dossiers_usd": 0.0591, "donnees_quittent_appareil": true, "hors_ligne": false, "analyse_llm": true}, "categories": {"Risque élevé": 4, "Risque faible": 10}}, "batch": {"resume": {"mode": "batch", "n": 14, "taux_succes_pct": 100.0, "revue_manuelle": 0, "latence_traitement_p50_ms": 2052.9, "latence_traitement_p95_ms": 2675.5, "delai_resultat_moyen_s": 43201.705, "debit_dossiers_s": 8.21, "cout_usd": 0.000414, "cout_1000_dossiers_usd": 0.0296, "donnees_quittent_appareil": true, "hors_ligne": false, "analyse_llm": true, "fenetre_h": 24}, "categories": {"Risque élevé": 4, "Risque faible": 10}}, "streaming": {"resume": {"mode": "streaming", "n": 14, "taux_succes_pct": 100.0, "revue_manuelle": 0, "latence_traitement_p50_ms": 2271.3, "latence_traitement_p95_ms": 3157.2, "delai_resultat_moyen_s": 2.251, "debit_dossiers_s": 3.55, "cout_usd": 0.000828, "cout_1000_dossiers_usd": 0.0591, "donnees_quittent_appareil": true, "hors_ligne": false, "analyse_llm": true, "debit_entrant_evt_s": 50, "fenetre_ms": 500}, "categories": {"Risque élevé": 4, "Risque faible": 10}}, "edge": {"resume": {"mode": "edge", "n": 14, "taux_succes_pct": 100.0, "revue_manuelle": 0, "latence_traitement_p50_ms": 3.1, "latence_traitement_p95_ms": 5.7, "delai_resultat_moyen_s": 0.003, "debit_dossiers_s": 287.87, "cout_usd": 0.0, "cout_1000_dossiers_usd": 0.0, "donnees_quittent_appareil": false, "hors_ligne": true, "analyse_llm": false, "sync_differee_evenements": 14, "calcul_reel_moyen_ms": 0.00063}, "categories": {"Risque élevé": 4, "Risque faible": 10}}}, "derive": [{"semaine": 1, "part_cas_invisibles": 0.05, "psi_scores": 0.0036, "rappel_pct": 94.7, "alerte_psi": false, "alerte_rappel": false}, {"semaine": 2, "part_cas_invisibles": 0.05, "psi_scores": 0.0331, "rappel_pct": 95.1, "alerte_psi": false, "alerte_rappel": false}, {"semaine": 3, "part_cas_invisibles": 0.08, "psi_scores": 0.0085, "rappel_pct": 92.0, "alerte_psi": false, "alerte_rappel": false}, {"semaine": 4, "part_cas_invisibles": 0.12, "psi_scores": 0.0075, "rappel_pct": 88.9, "alerte_psi": false, "alerte_rappel": false}, {"semaine": 5, "part_cas_invisibles": 0.18, "psi_scores": 0.0296, "rappel_pct": 84.3, "alerte_psi": false, "alerte_rappel": true}, {"semaine": 6, "part_cas_invisibles": 0.25, "psi_scores": 0.0307, "rappel_pct": 79.8, "alerte_psi": false, "alerte_rappel": true}], "scenarios": [{"scenario": "Consultation du statut par les candidats sur le portail", "mode": "real-time", "justification": "réponse immédiate à une requête utilisateur", "outils_cles": "API REST (FastAPI) conteneurisée"}, {"scenario": "Classement nocturne de 5 000 dossiers", "mode": "batch", "justification": "résultat tolérable à l'heure : traitement planifié de gros volumes", "outils_cles": "Apache Airflow, Dagster, Prefect"}, {"scenario": "Pic de dépôts à la clôture des candidatures", "mode": "streaming", "justification": "flux continu et fort volume : traitement dès l'arrivée des événements", "outils_cles": "Apache Kafka, Apache Flink, AWS Kinesis"}, {"scenario": "Jury sur tablette, centre d'examen sans réseau", "mode": "edge", "justification": "pas de réseau fiable ou confidentialité maximale : exécution sur l'appareil", "outils_cles": "TensorFlow Lite, Core ML, ONNX"}, {"scenario": "Dossiers confidentiels (handicap, dérogations) traités localement", "mode": "edge", "justification": "pas de réseau fiable ou confidentialité maximale : exécution sur l'appareil", "outils_cles": "TensorFlow Lite, Core ML, ONNX"}]};
+const $=i=>document.getElementById(i);
+const el=(t,x,c)=>{const e=document.createElement(t);if(x!=null)e.textContent=x;if(c)e.className=c;return e};
+const COL={'real-time':'#0B3C5D','batch':'#7FB6DD','streaming':'#2E9E5B','edge':'#FDB913'};
+const LBL={'real-time':'Real-Time','batch':'Batch','streaming':'Streaming','edge':'Edge'};
+const fmt=s=>s>=3600?(s/3600).toFixed(1)+' h':s>=1?s.toFixed(2)+' s':(s*1000).toFixed(1)+' ms';
+$('n').textContent=D.n_simulation.toLocaleString('fr-FR');
+const ms=['real-time','batch','streaming','edge'];
+$('modes').replaceChildren(...ms.map(m=>{const r=D.modes[m].resume,c=el('div',null,'card mode');c.style.borderTop='5px solid '+COL[m];c.append(el('h3',m.toUpperCase()));
+ [['Latence de traitement p95',r.latence_traitement_p95_ms+' ms'],['Délai avant résultat',fmt(r.delai_resultat_moyen_s)],['Coût / 1 000 dossiers',r.cout_1000_dossiers_usd.toFixed(4)+' $'],['Succès',r.taux_succes_pct+' %'],['Revues manuelles (repli)',r.revue_manuelle]].forEach(([a,b])=>{const w=el('div',null,'row');w.append(el('span',a),el('b',b));c.append(w)});
+ c.append(el('span',r.donnees_quittent_appareil?'données vers le cloud':'données restent sur l’appareil','tag '+(r.donnees_quittent_appareil?'r':'g')),el('span',r.hors_ligne?'fonctionne hors ligne':'réseau requis','tag '+(r.hors_ligne?'g':'r')),el('span',r.analyse_llm?'analyse LLM':'règles seules','tag'));return c}));
+function bars(id,vals,log,f){const mx=Math.max(...vals.map(v=>log?Math.log10(v*1000+1):v)),box=$(id);box.replaceChildren(...ms.map((m,i)=>{const v=vals[i],w=(log?Math.log10(v*1000+1):v)/mx*100,d=el('div',null,'bar'),b=el('i');b.style.width=Math.max(w*0.6,1)+'%';b.style.background=COL[m];d.append(el('span',m,'l'),b,el('em',f(v)));return d}))}
+bars('b1',ms.map(m=>D.modes[m].resume.delai_resultat_moyen_s),true,fmt);bars('b2',ms.map(m=>D.modes[m].resume.cout_1000_dossiers_usd),false,v=>v.toFixed(4)+' $');
+function rec(){const l=+$('lat').value,v=+$('vol').value,f=$('flux').value==='1',c=$('conn').value,d=$('don').value;let m,w;
+ if(c==='aucune'||d==='maximale'){m='edge';w='pas de réseau fiable ou confidentialité maximale : exécution sur l’appareil'}
+ else if(l>=3600000){m='batch';w='résultat tolérable à l’heure : traitement planifié de gros volumes'}
+ else if(f&&v>=100000){m='streaming';w='flux continu et fort volume : traitement dès l’arrivée des événements'}
+ else{m='real-time';w='réponse immédiate à une requête utilisateur'}
+ const T={'batch':'Airflow, Dagster, Prefect','real-time':'API REST (FastAPI) conteneurisée','streaming':'Kafka, Flink, Kinesis','edge':'TensorFlow Lite, Core ML, ONNX'};
+ const r=$('rec');r.replaceChildren();r.append(el('b','Mode recommandé : '+m.toUpperCase()),el('br'),document.createTextNode(w),el('br'),document.createTextNode('Outils clés : '+T[m]))}
+['lat','vol','flux','conn','don'].forEach(i=>$(i).addEventListener('input',rec));rec();
+
+/* --- Formulaire : mêmes règles que edudeploy/scoring.py --- */
+const SEUIL=70, hist=[];
+function scorer(d){const raisons=[['Base',10,'point de départ']];let s=10;
+ if(d.sim>=40||d.diplome==='non'){s+=60;raisons.push(['Fraude probable',60,d.sim>=40?'similarité de la lettre ≥ 40 %':'diplôme non vérifiable'])}
+ if(d.pieces==='non'){s+=30;raisons.push(['Dossier incomplet',30,'pièces manquantes'])}
+ if(d.sensible==='oui'){s+=20;raisons.push(['Cas sensible',20,'dérogation, bourse ou handicap'])}
+ return {score:Math.min(s,100),raisons}}
+function analyser(e){e.preventDefault();
+ const v=n=>$(n).value.trim(),errs=[],d={id:v('candidat_id'),prog:v('programme'),moy:parseFloat(v('moyenne')),sim:parseFloat(v('similarite')),diplome:v('diplome'),pieces:v('pieces'),sensible:v('sensible'),mode:v('mode')};
+ if(!d.id||d.id.length>40)errs.push('Identifiant : 1 à 40 caractères.');
+ if(!d.prog||d.prog.length>60)errs.push('Programme : 1 à 60 caractères.');
+ if(!(d.moy>=0&&d.moy<=20))errs.push('Moyenne : un nombre entre 0 et 20.');
+ if(!(d.sim>=0&&d.sim<=100))errs.push('Similarité : un nombre entre 0 et 100.');
+ $('err').textContent=errs.join(' ');if(errs.length)return;
+ const {score,raisons}=scorer(d),haut=score>=SEUIL,r=D.modes[d.mode].resume,res=$('res');
+ res.replaceChildren();
+ const t=el('div');t.append(el('b',d.id+' · '+d.prog+' · '),el('span','score '+score+' / 100 · '+(haut?'Risque élevé':'Risque faible'),'badge '+(haut?'hi':'lo')));res.append(t);
+ const g=el('div',null,'gauge'),bi=el('i');bi.style.width=score+'%';bi.style.background=haut?'#C62828':'#1E8E4E';const mk=el('u');mk.style.left=SEUIL+'%';mk.title='Seuil HITL '+SEUIL;g.append(bi,mk);res.append(g);
+ const gl=el('div',null,'gl');gl.append(el('span','0'),el('span','seuil HITL '+SEUIL),el('span','100'));res.append(gl);
+ res.append(el('div',haut?'Décision : escalade vers la commission (validation humaine requise). L’agent ne décide jamais seul de l’admission.':'Décision : traitement standard, sans escalade.'));
+ const ul=el('ul',null,'why');raisons.forEach(([a,p,w])=>ul.append(el('li',a+' : +'+p+' ('+w+')')));res.append(ul);
+ const mt=el('div');mt.style.marginTop='8px';
+ mt.append(el('b','Mode '+LBL[d.mode]+' (simulation) : '),document.createTextNode('traitement ≈ '+r.latence_traitement_p50_ms+' ms (p95 '+r.latence_traitement_p95_ms+' ms) · résultat disponible après '+fmt(r.delai_resultat_moyen_s)+' · coût ≈ '+(r.cout_1000_dossiers_usd/1000).toFixed(6)+' $ · '+(r.analyse_llm?'analyse LLM + règles':'règles seules')+' · '+(r.donnees_quittent_appareil?'données envoyées au cloud':'données conservées sur l’appareil')));
+ res.append(mt);
+ hist.unshift([new Date().toLocaleTimeString('fr-FR'),d.id,LBL[d.mode],score,haut?'Risque élevé':'Risque faible']);hist.length=Math.min(hist.length,6);
+ const h=$('hist'),tb=el('table'),hd=el('tr');['Heure','Candidat','Mode','Score','Catégorie'].forEach(x=>hd.append(el('th',x)));tb.append(hd);
+ hist.forEach(row=>{const tr=el('tr');row.forEach(x=>tr.append(el('td',x)));tb.append(tr)});const wr=el('div');wr.style.overflowX='auto';wr.append(tb);h.replaceChildren(el('h2','Dernières analyses (session)'),wr);h.firstChild.style.cssText='font-size:14px;color:var(--navy);margin:0 0 6px'}
+function remplir(o){Object.entries(o).forEach(([k,v])=>$(k).value=v);$('err').textContent=''}
+$('fd').addEventListener('submit',analyser);
+$('ex1').addEventListener('click',()=>remplir({candidat_id:'CAND-101',programme:'Gestion',moyenne:'14.5',similarite:'12',diplome:'oui',pieces:'oui',sensible:'non'}));
+$('ex2').addEventListener('click',()=>remplir({candidat_id:'CAND-102',programme:'Médecine',moyenne:'16.2',similarite:'55',diplome:'oui',pieces:'oui',sensible:'non'}));
+
+(function(){const s=$('dr'),W=520,H=250,p=36,NS='http://www.w3.org/2000/svg',mk=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e};
+ const X=i=>p+i*(W-2*p)/(D.derive.length-1),Y=v=>H-p-(v-70)/30*(H-2*p);
+ [70,80,85,90,100].forEach(v=>{s.append(mk('line',{x1:p,x2:W-p,y1:Y(v),y2:Y(v),stroke:v===85?'#1E8E4E':'#9DB1C2','stroke-dasharray':v===85?'6 4':'2 4','stroke-width':v===85?2:1}));const t=mk('text',{x:4,y:Y(v)+4});t.textContent=v+'%';s.append(t)});
+ s.append(mk('polyline',{points:D.derive.map((d,i)=>X(i)+','+Y(d.rappel_pct)).join(' '),fill:'none',stroke:'#C62828','stroke-width':3}));
+ D.derive.forEach((d,i)=>{s.append(mk('circle',{cx:X(i),cy:Y(d.rappel_pct),r:5,fill:d.alerte_rappel?'#C62828':'#0B3C5D'}));const t=mk('text',{x:X(i)-8,y:H-12});t.textContent='S'+d.semaine;s.append(t);const u=mk('text',{x:X(i)-12,y:Y(d.rappel_pct)-10});u.textContent=d.rappel_pct;s.append(u)});
+ const mp=Math.max(...D.derive.map(d=>d.psi_scores));$('drn').textContent='Rappel « risque élevé » sous 85 % dès la semaine '+(D.derive.find(d=>d.alerte_rappel)||{}).semaine+'. PSI max des scores : '+mp+' (seuil 0,2) : la dérive n’est pas visible côté données seules.'})();
+const t=$('sc');const h=el('tr');['Scénario','Mode','Pourquoi','Outils clés'].forEach(x=>h.append(el('th',x)));t.append(h);D.scenarios.forEach(r=>{const tr=el('tr');[r.scenario,r.mode,r.justification,r.outils_cles].forEach(x=>tr.append(el('td',x)));t.append(tr)});
+$('st').replaceChildren(...['Monitoring : latence, coût, rappel, PSI','Alerte : rappel < 85 %','Recalibrage (CT) : règles / seuil','Tests golden + approbation','Déploiement SemVer + rollback'].map((x,i)=>el('div',x,'step'+(i===2?' k':''))));
+
+/* --- Menu : section active --- */
+(function(){const links=[...document.querySelectorAll('#menu a')],map=new Map(links.map(a=>[a.getAttribute('href').slice(1),a]));
+ const on=id=>links.forEach(a=>a.classList.toggle('on',a===map.get(id)));on('modes');
+ if(!('IntersectionObserver' in window))return;
+ const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)on(e.target.id)})},{rootMargin:'-20% 0px -65% 0px'});
+ map.forEach((a,id)=>{const s=document.getElementById(id);if(s)io.observe(s)});
+ links.forEach(a=>a.addEventListener('click',()=>on(a.getAttribute('href').slice(1))))})();
+</script></body></html>
